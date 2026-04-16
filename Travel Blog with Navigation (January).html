@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Travel Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:#eef2f7;color:#333;}
+
+header{
+  height:60vh;
+  background:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429') center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  color:white;text-align:center;
+}
+header h1{font-size:40px;background:rgba(0,0,0,0.5);padding:10px 20px;border-radius:10px;}
+header p{margin-top:10px;background:rgba(0,0,0,0.5);padding:5px 15px;border-radius:10px;}
+
+nav{background:#111;display:flex;justify-content:center;position:sticky;top:0;z-index:1000;}
+nav a{color:white;padding:15px 25px;text-decoration:none;transition:0.3s;font-weight:500;}
+nav a:hover{background:#ff7e5f;}
+
+.container{padding:40px;max-width:1000px;margin:auto;}
+
+.blog{
+  background:white;margin-bottom:40px;border-radius:15px;overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);transition:0.3s;
+}
+.blog:hover{transform:translateY(-5px);}
+
+.blog img{width:100%;height:300px;object-fit:cover;}
+.blog-content{padding:25px;}
+.blog h2{margin-bottom:10px;color:#444;}
+.blog p{line-height:1.7;margin-bottom:10px;}
+
+.tag{
+  display:inline-block;background:#ff7e5f;color:white;
+  padding:5px 10px;border-radius:20px;font-size:12px;margin-bottom:10px;
+}
+
+footer{background:#111;color:white;text-align:center;padding:20px;}
+
+.top-btn{
+  position:fixed;bottom:20px;right:20px;
+  background:#ff7e5f;color:white;border:none;
+  padding:10px 15px;border-radius:50%;cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌍 My Travel Blog</h1>
+  <p>Stories | Adventures | Memories</p>
+</header>
+
+<nav>
+  <a href="#trip1">Manali</a>
+  <a href="#trip2">Goa</a>
+  <a href="#trip3">Rajasthan</a>
+</nav>
+
+<div class="container">
+
+<div class="blog" id="trip1">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
+<div class="blog-content">
+<span class="tag">Mountains</span>
+<h2>🏔️ Manali Adventure</h2>
+<p>Manali welcomed me with cool air, snow peaks and peaceful valleys. Walking through pine forests felt refreshing.</p>
+<p>At Solang Valley, I tried paragliding and saw breathtaking aerial views. Rohtang Pass was fully covered in snow, making it magical.</p>
+<p>Local cafes served hot Maggi and tea which made the experience even more special.</p>
+</div>
+</div>
+
+<div class="blog" id="trip2">
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
+<div class="blog-content">
+<span class="tag">Beach</span>
+<h2>🏖️ Goa Trip</h2>
+<p>Goa is full of energy with beaches, music and delicious seafood. The vibe is relaxing yet exciting.</p>
+<p>I enjoyed water sports like jet skiing and parasailing. Watching sunset at Baga Beach was unforgettable.</p>
+<p>Nightlife with music, lights and beach parties made every moment lively.</p>
+</div>
+</div>
+
+<div class="blog" id="trip3">
+<img src="https://images.unsplash.com/photo-1477587458883-47145ed94245">
+<div class="blog-content">
+<span class="tag">Desert</span>
+<h2>🏜️ Rajasthan Safari</h2>
+<p>Rajasthan showed royal culture and desert beauty. Jaisalmer's golden forts were amazing.</p>
+<p>Desert safari on camel across sand dunes during sunset was the best part.</p>
+<p>Evening cultural dance and music under stars created a lifetime memory.</p>
+</div>
+</div>
+
+</div>
+
+<footer>
+<p>© 2026 Travel Blog | Made with ❤️</p>
+</

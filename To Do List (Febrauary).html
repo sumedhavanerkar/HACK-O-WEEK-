@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Daily Routine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+    font-family: Arial;
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+}
+
+.container{
+    background:white;
+    width:380px;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+}
+
+input, button{
+    padding:10px;
+    margin:5px 0;
+}
+
+#taskInput{
+    width:60%;
+}
+
+#timeInput{
+    width:35%;
+}
+
+button{
+    cursor:pointer;
+    background:#4e73df;
+    color:white;
+    border:none;
+    border-radius:5px;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    background:#f1f3f5;
+    margin:6px 0;
+    padding:8px;
+    border-radius:6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.completed{
+    text-decoration:line-through;
+    color:gray;
+}
+
+.delete{
+    color:red;
+    cursor:pointer;
+    margin-left:8px;
+}
+
+.progress{
+    margin-top:10px;
+    background:#ddd;
+    border-radius:8px;
+    height:15px;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:#1cc88a;
+    border-radius:8px;
+}
+
+.small{
+    font-size:12px;
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Daily Routine</h2>
+
+<input id="taskInput" placeholder="New Task">
+<input type="time" id="timeInput">
+<button onclick="addTask()">Add</button>
+
+<ul id="taskList"></ul>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<p id="progressText">Completed: 0%</p>
+
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks(){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function scheduleReminder(task){
+    if(!task.time) return;
+
+    let now = new Date();
+    let [h,m] = task.time.split(":");
+    let reminder = new Date();
+    reminder.setHours(h,m,0,0);
+
+    let diff = reminder - now;
+    if(diff > 0){
+        setTimeout(()=>{
+            alert("Reminder: " + task.text);
+        }, diff);
+    }
+}
+
+function updateProgress(){
+    let completed = tasks.filter(t=>t.done).length;
+    let percent = tasks.length ? 
+        Math.round((completed/tasks.length)*100) : 0;
+
+    document.getElementById("progressBar").style.width = percent+"%";
+    document.getElementById("progressText").innerText =
+        "Completed: "+percent+"%";
+}
+
+function showTasks(){
+    let list = document.getElementById("taskList");
+    list.innerHTML="";
+
+    tasks.forEach((task,index)=>{
+        let li = document.createElement("li");
+
+        let text = document.createElement("span");
+        text.innerHTML = `
+            <input type="checkbox"
+                ${task.done?"checked":""}
+                onchange="toggleTask(${index})">
+            <span class="${task.done?'completed':''}">
+                ${task.text}
+            </span>
+            <div class="small">${task.time || ""}</div>
+        `;
+
+        let del = document.createElement("span");
+        del.innerHTML="❌";
+        del.className="delete";
+        del.onclick=()=>deleteTask(index);
+
+        li.appendChild(text);
+        li.appendChild(del);
+        list.appendChild(li);
+    });
+
+    saveTasks();
+    updateProgress();
+}
+
+function addTask(){
+    let text = document.getElementById("taskInput").value.trim();
+    let time = document.getElementById("timeInput").value;
+
+    if(text==="") return;
+
+    let task = {text, done:false, time};
+    tasks.push(task);
+
+    scheduleReminder(task);
+
+    document.getElementById("taskInput").value="";
+    document.getElementById("timeInput").value="";
+
+    showTasks();
+}
+
+function toggleTask(index){
+    tasks[index].done = !tasks[index].done;
+    showTasks();
+}
+
+function deleteTask(index){
+    tasks.splice(index,1);
+    showTasks();
+}
+
+tasks.forEach(scheduleReminder);
+showTasks();
+</script>
+
+</body>
+</html>

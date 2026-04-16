@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced GK Quiz</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.quiz-container {
+  background: white;
+  width: 420px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(20px);} 
+  to {opacity:1; transform: translateY(0);} 
+}
+
+h2 { text-align:center; }
+
+.progress {
+  height: 8px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #4caf50;
+  transition: 0.3s;
+}
+
+.option {
+  background: #f1f1f1;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option:hover {
+  background: #dfe6ff;
+}
+
+.selected {
+  background: #c7d2fe;
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  background: #667eea;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #5a67d8;
+}
+
+#timer {
+  text-align: right;
+  font-weight: bold;
+  color: #444;
+}
+
+#result {
+  text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+  <h2>🌍 GK Quiz</h2>
+
+  <div id="quiz">
+    <div id="timer">Time: 30s</div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <p id="question"></p>
+    <div id="options"></div>
+    <button onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div id="result" style="display:none;"></div>
+</div>
+
+<script>
+const questions = [
+  { q: "Capital of India?", options: ["Mumbai","Delhi","Chennai","Kolkata"], answer: "Delhi" },
+  { q: "Red Planet?", options: ["Earth","Mars","Venus","Jupiter"], answer: "Mars" },
+  { q: "Largest Ocean?", options: ["Indian","Atlantic","Pacific","Arctic"], answer: "Pacific" },
+  { q: "Father of Nation?", options: ["Nehru","Gandhi","Bose","Patel"], answer: "Gandhi" },
+  { q: "Continents count?", options: ["5","6","7","8"], answer: "7" }
+];
+
+let index = 0, score = 0, selected = "", results = [];
+let timeLeft = 30, timer;
+
+startTimer();
+loadQuestion();
+
+function startTimer(){
+  timer = setInterval(()=>{
+    timeLeft--;
+    document.getElementById("timer").innerText = "Time: " + timeLeft + "s";
+    if(timeLeft<=0){ clearInterval(timer); showResult(); }
+  },1000);
+}
+
+function loadQuestion(){
+  let q = questions[index];
+  document.getElementById("question").innerText = (index+1)+". "+q.q;
+
+  let html="";
+  q.options.forEach(opt=>{
+    html += `<div class="option" onclick="selectOption(this,'${opt}')">${opt}</div>`;
+  });
+  document.getElementById("options").innerHTML = html;
+
+  document.getElementById("progressBar").style.width = ((index/questions.length)*100)+"%";
+}
+
+function selectOption(el,opt){
+  selected = opt;
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function nextQuestion(){
+  if(!selected){ alert("Select answer"); return; }
+
+  let correct = questions[index].answer;
+  if(selected===correct){ score++; results.push("✔ Correct"); }
+  else { results.push("❌ Wrong (Ans: "+correct+")"); }
+
+  selected="";
+  index++;
+
+  if(index<questions.length){ loadQuestion(); }
+  else { clearInterval(timer); showResult(); }
+}
+
+function showResult(){
+  document.getElementById("quiz").style.display="none";
+  let res = document.getElementById("result");
+  res.style.display="block";
+
+  let msg = `<h3>Your Score: ${score}/${questions.length}</h3>`;
+  results.forEach((r,i)=>{ msg += `<p>Q${i+1}: ${r}</p>`; });
+
+  msg += `<button onclick="location.reload()">Restart</button>`;
+  res.innerHTML = msg;
+}
+</script>
+
+</body>
+</html>

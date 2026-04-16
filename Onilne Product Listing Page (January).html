@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 FreshMart - Premium Grocery Store</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+min-height:100vh;
+padding:20px;
+}
+
+.header{
+text-align:center;
+margin-bottom:40px;
+color:white;
+}
+
+.header h1{
+font-size:3em;
+margin-bottom:10px;
+}
+
+.products-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:30px;
+max-width:1400px;
+margin:auto;
+}
+
+.product-card{
+background:white;
+border-radius:20px;
+padding:25px;
+box-shadow:0 20px 40px rgba(0,0,0,0.1);
+transition:0.4s;
+}
+
+.product-card:hover{
+transform:translateY(-10px);
+}
+
+.product-image{
+width:100%;
+height:200px;
+overflow:hidden;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+.product-image img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.product-name{
+font-size:22px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.product-price{
+font-size:26px;
+color:#27ae60;
+margin-bottom:15px;
+font-weight:700;
+}
+
+.add-to-cart-btn{
+background:#667eea;
+color:white;
+border:none;
+padding:12px;
+width:100%;
+border-radius:50px;
+cursor:pointer;
+font-size:16px;
+}
+
+.add-to-cart-btn:hover{
+background:#5a67d8;
+}
+
+.cart-summary{
+position:fixed;
+right:30px;
+bottom:30px;
+background:white;
+padding:25px;
+border-radius:20px;
+width:320px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin:8px 0;
+}
+
+.cart-total{
+font-size:28px;
+font-weight:700;
+margin:15px 0;
+color:#27ae60;
+}
+
+.pay-btn{
+background:#e74c3c;
+color:white;
+border:none;
+padding:14px;
+width:100%;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.pay-btn:disabled{
+background:#bbb;
+cursor:not-allowed;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1><i class="fas fa-shopping-basket"></i> FreshMart</h1>
+<p>Premium Organic Grocery Store</p>
+</div>
+
+<div class="products-grid" id="productsGrid"></div>
+
+<div class="cart-summary">
+
+<h3>🛒 Cart (<span id="itemCount">0</span>)</h3>
+
+<div id="cartItems">Cart is empty</div>
+
+<div class="cart-total" id="cartTotal">₹0</div>
+
+<button class="pay-btn" onclick="makePayment()" id="payButton" disabled>
+Proceed to Payment
+</button>
+
+</div>
+
+<script>
+
+const products = [
+
+{
+id:1,
+name:"Organic Tomatoes (1kg)",
+price:45,
+image:"https://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg"
+},
+
+{
+id:2,
+name:"Fresh Spinach Bundle",
+price:32,
+image:"https://images.unsplash.com/photo-1576045057995-568f588f82fb"
+},
+
+{
+id:3,
+name:"Premium Brown Rice (1kg)",
+price:85,
+image:"https://images.unsplash.com/photo-1586201375761-83865001e31c"
+},
+
+{
+id:4,
+name:"California Almonds (200g)",
+price:220,
+image:"https://images.unsplash.com/photo-1508747703725-719777637510"
+},
+
+{
+id:5,
+name:"Whole Wheat Bread",
+price:58,
+image:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec"
+},
+
+{
+id:6,
+name:"Greek Yogurt",
+price:125,
+image:"https://images.pexels.com/photos/704569/pexels-photo-704569.jpeg"
+},
+
+{
+id:7,
+name:"Hass Avocados",
+price:180,
+image:"https://images.unsplash.com/photo-1519162808019-7de1683fa2ad"
+},
+
+{
+id:8,
+name:"Olive Oil",
+price:450,
+image:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5"
+},
+
+{
+id:9,
+name:"Free Range Eggs",
+price:78,
+image:"https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f"
+},
+
+];
+
+let cart=[];
+
+function renderProducts(){
+
+const grid=document.getElementById("productsGrid");
+
+grid.innerHTML=products.map(product=>`
+
+<div class="product-card">
+
+<div class="product-image">
+<img src="${product.image}" alt="${product.name}">
+</div>
+
+<div class="product-name">${product.name}</div>
+
+<div class="product-price">₹${product.price}</div>
+
+<button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+Add to Cart
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+function addToCart(id){
+
+const product=products.find(p=>p.id===id);
+const existing=cart.find(i=>i.id===id);
+
+if(existing){
+
+existing.quantity++;
+
+}else{
+
+cart.push({...product,quantity:1});
+
+}
+
+updateCart();
+
+}
+
+function updateCart(){
+
+const cartItems=document.getElementById("cartItems");
+const itemCount=document.getElementById("itemCount");
+const totalEl=document.getElementById("cartTotal");
+const payButton=document.getElementById("payButton");
+
+let totalItems=0;
+let totalPrice=0;
+
+cartItems.innerHTML="";
+
+cart.forEach(item=>{
+
+totalItems+=item.quantity;
+totalPrice+=item.price*item.quantity;
+
+cartItems.innerHTML+=`
+
+<div class="cart-item">
+<span>${item.name}</span>
+<span>x${item.quantity}</span>
+</div>
+
+`;
+
+});
+
+itemCount.textContent=totalItems;
+totalEl.textContent="₹"+totalPrice;
+
+if(totalItems===0){
+
+cartItems.innerHTML="Cart is empty";
+payButton.disabled=true;
+
+}else{
+
+payButton.disabled=false;
+
+}
+
+}
+
+function makePayment(){
+
+let total=cart.reduce((sum,item)=>sum+item.price*item.quantity,0);
+
+alert("Payment Successful!\nTotal: ₹"+total+"\nThank you for shopping!");
+
+cart=[];
+updateCart();
+
+}
+
+renderProducts();
+
+</script>
+
+</body>
+</html>
